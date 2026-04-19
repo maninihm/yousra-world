@@ -35,7 +35,6 @@
       overflow-x:hidden;
     }
 
-    /* ── Nebula ── */
     .nebula{position:fixed;inset:0;pointer-events:none;z-index:0}
     .nebula::before,.nebula::after{content:"";position:absolute;inset:0}
     .nebula::before{
@@ -57,7 +56,6 @@
       to{transform:translateY(12px) translateX(10px) scale(1.04)}
     }
 
-    /* ── Hero ── */
     .hero{
       position:relative;z-index:2;
       min-height:100vh;
@@ -130,8 +128,12 @@
       border-color:rgba(255,245,200,0.35);
       box-shadow:0 10px 35px rgba(255,235,160,0.12);
     }
+    #musicToggle.playing{
+      border-color:rgba(255,200,220,0.4);
+      background:rgba(255,180,210,0.08);
+      box-shadow:0 0 24px rgba(255,180,200,0.12);
+    }
 
-    /* ── Sky ── */
     .sky-section{position:relative;z-index:2;min-height:160vh;padding:20px 0 100px}
 
     .section-note{
@@ -154,7 +156,6 @@
       margin:0 auto;min-height:155vh;overflow:hidden;
     }
 
-    /* ── Stars ── */
     .ambient-star{
       position:absolute;border:none;border-radius:50%;
       background:rgba(255,255,255,0.85);opacity:0.5;
@@ -176,7 +177,6 @@
       transition:transform .35s ease,box-shadow .35s ease,filter .35s ease;
       z-index:3;
     }
-
     .star::before{
       content:"";position:absolute;inset:-14px;border-radius:50%;
       background:radial-gradient(circle,rgba(255,255,255,.18),transparent 65%);
@@ -200,7 +200,6 @@
         0 0 90px rgba(170,210,255,.35);
       animation:twinkleSpecial 4.2s ease-in-out infinite;
     }
-
     .star.constellation-star{
       box-shadow:
         0 0 10px rgba(255,255,255,.9),
@@ -217,7 +216,6 @@
       50%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}
     }
 
-    /* ── Shooting stars ── */
     .shooting-star{
       position:absolute;width:2px;height:120px;
       background:linear-gradient(to bottom,rgba(255,255,255,.9),transparent);
@@ -229,7 +227,6 @@
     .shooting-star:nth-child(1){top:8%;left:76%;animation-delay:1.5s}
     .shooting-star:nth-child(2){top:28%;left:12%;animation-delay:5.5s}
     .shooting-star:nth-child(3){top:62%;left:84%;animation-delay:10s}
-
     @keyframes shoot{
       0%{opacity:0;transform:translate(0,0) rotate(35deg)}
       8%{opacity:1}
@@ -237,7 +234,6 @@
       100%{opacity:0;transform:translate(-190px,210px) rotate(35deg)}
     }
 
-    /* ── Constellation ── */
     #constellationSvg{
       position:absolute;inset:0;width:100%;height:100%;
       z-index:2;pointer-events:none;overflow:visible;
@@ -253,7 +249,6 @@
       stroke-linecap:round;opacity:0;filter:blur(4px);
       transition:opacity .9s ease;
     }
-
     #constellationLabel{
       position:absolute;left:50%;top:57%;
       transform:translate(-50%,-50%);
@@ -265,11 +260,8 @@
       opacity:0;transition:opacity .9s ease,transform .9s ease;
       pointer-events:none;z-index:4;
     }
-    #constellationLabel.show{
-      opacity:1;transform:translate(-50%,-66%);
-    }
+    #constellationLabel.show{opacity:1;transform:translate(-50%,-66%)}
 
-    /* ── Popup ── */
     .popup-overlay{
       position:fixed;inset:0;
       background:rgba(2,4,12,.65);
@@ -279,7 +271,6 @@
       transition:opacity .4s ease,visibility .4s ease;z-index:20;
     }
     .popup-overlay.show{opacity:1;visibility:visible}
-
     .popup{
       width:min(580px,100%);
       background:linear-gradient(165deg, rgba(14,20,42,.96), rgba(8,12,26,.97));
@@ -292,7 +283,6 @@
       transition:transform .45s ease;position:relative;overflow:hidden;
     }
     .popup-overlay.show .popup{transform:translateY(0) scale(1)}
-
     .popup::before{
       content:"";position:absolute;width:250px;height:250px;
       right:-80px;top:-80px;pointer-events:none;
@@ -303,7 +293,6 @@
       left:-60px;bottom:-60px;pointer-events:none;
       background:radial-gradient(circle,rgba(255,190,230,.1),transparent 70%);
     }
-
     .popup-kicker{
       font-size:0.73rem;text-transform:uppercase;
       letter-spacing:0.22em;color:var(--muted);margin-bottom:12px;
@@ -314,7 +303,6 @@
       line-height:1.2;margin-bottom:14px;
     }
     .popup p{color:#dce6ff;line-height:1.92;font-size:1rem;font-weight:300}
-
     .close-btn{
       margin-top:24px;border:none;border-radius:999px;
       padding:12px 20px;color:var(--text);cursor:pointer;
@@ -324,7 +312,6 @@
     }
     .close-btn:hover{background:rgba(255,255,255,.11);transform:translateY(-1px)}
 
-    /* ── Final message ── */
     .final-message{
       width:min(800px,calc(100% - 32px));
       margin:110px auto 0;padding:40px 28px;
@@ -356,12 +343,11 @@
     }
 
     .footer-note{
-      text-align:center;color:rgba(184,197,234,.5);
-      margin:28px 0 10px;font-size:0.82rem;
+      text-align:center;color:rgba(184,197,234,.4);
+      margin:28px 0 10px;font-size:0.8rem;
       z-index:2;position:relative;
     }
 
-    /* ── Particles ── */
     .particle{
       position:fixed;bottom:-30px;border-radius:50%;
       background:rgba(225,235,255,.5);
@@ -376,12 +362,26 @@
       to{transform:translateY(-110vh) translateX(var(--drift,12px)) scale(1.4);opacity:0}
     }
 
-    /* ── Music pill ── */
-    #musicToggle.playing{
-      border-color:rgba(255,230,160,.28);
-      background:rgba(255,240,160,.06);
-      box-shadow:0 0 22px rgba(255,235,130,.1);
+    /* Music visualizer bars (decorative) */
+    .music-bars{
+      display:none;align-items:flex-end;gap:3px;height:16px;margin-left:8px;
     }
+    .music-bars.active{display:flex}
+    .music-bars span{
+      display:block;width:3px;background:rgba(255,210,230,.7);border-radius:2px;
+      animation:bar var(--d,.6s) ease-in-out infinite alternate;
+    }
+    .music-bars span:nth-child(1){height:6px;--d:.5s}
+    .music-bars span:nth-child(2){height:12px;--d:.7s;animation-delay:.1s}
+    .music-bars span:nth-child(3){height:9px;--d:.6s;animation-delay:.2s}
+    .music-bars span:nth-child(4){height:14px;--d:.8s;animation-delay:.05s}
+    .music-bars span:nth-child(5){height:7px;--d:.55s;animation-delay:.15s}
+    @keyframes bar{
+      from{transform:scaleY(.4)}
+      to{transform:scaleY(1)}
+    }
+
+    #musicToggle{display:flex;align-items:center;gap:6px}
 
     @media(max-width:700px){
       .section-note{flex-direction:column;align-items:flex-start}
@@ -404,7 +404,12 @@
     </p>
     <div class="hero-actions">
       <a href="#skyStart" class="btn primary">Enter the night sky ✦</a>
-      <button class="btn" id="musicToggle" type="button">♪ Play music</button>
+      <button class="btn" id="musicToggle" type="button">
+        ♪ Play music
+        <span class="music-bars" id="musicBars">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </button>
     </div>
   </section>
 
@@ -420,22 +425,19 @@
         <path id="heartGlow" class="constellation-glow"></path>
         <path id="heartLine" class="constellation-line"></path>
       </svg>
-
       <div id="constellationLabel">Yousra</div>
-
       <div class="shooting-star"></div>
       <div class="shooting-star"></div>
       <div class="shooting-star"></div>
     </div>
 
-    <!-- ══ FINAL MESSAGE ══ -->
     <div class="final-message" id="finalMessage">
       <div class="small">The last thing the sky wanted you to know</div>
       <h3>"If the universe is infinite,<br>then my feelings for you might be too."</h3>
       <div class="name-signed">— written in the stars, just for Yousra</div>
     </div>
 
-    <div class="footer-note">Add a music.mp3 next to this file to enable the music button.</div>
+    <div class="footer-note">best experienced with headphones 🎧</div>
   </section>
 
   <!-- ══ POPUP ══ -->
@@ -448,12 +450,13 @@
     </div>
   </div>
 
-  <audio id="bgMusic" loop preload="auto">
-    <source src="music.mp3" type="audio/mpeg" />
+  <!-- ══ MUSIC — soft romantic piano via free CDN ══ -->
+  <audio id="bgMusic" loop preload="auto" crossorigin="anonymous">
+    <source src="https://assets.mixkit.co/music/preview/mixkit-sleepy-cat-135.mp3" type="audio/mpeg" />
+    <source src="https://assets.mixkit.co/music/preview/mixkit-dreaming-big-31.mp3" type="audio/mpeg" />
   </audio>
 
   <script>
-    /* ── Data ── */
     const HER_NAME = "Yousra";
     const FINAL_UNLOCK_AFTER = 6;
 
@@ -469,7 +472,6 @@
     ];
 
     const starsData = [
-      // Regular stars
       { x:16, y:18, size:10, msg:messages[0] },
       { x:28, y:30, size: 8, msg:messages[1] },
       { x:81, y:24, size: 9, msg:messages[2] },
@@ -478,17 +480,12 @@
       { x:14, y:74, size:10, msg:messages[5] },
       { x:78, y:79, size: 9, msg:messages[6] },
       { x:37, y:88, size: 8, msg:messages[7] },
-
-      // Special center star
       {
-        x:50, y:38, size:26,
-        special:true,
+        x:50, y:38, size:26, special:true,
         title:"The brightest star",
         kicker:"The rarest light in the universe",
-        msg:`Out of billions of stars, somehow you're the only one I see.`
+        msg:"Out of billions of stars, somehow you're the only one I see."
       },
-
-      // Constellation stars (form a heart around y=62%)
       { x:62, y:61, size:9, cons:true, msg:"Some lights are not meant to be found by everyone." },
       { x:57, y:56, size:8, cons:true, msg:"Some hearts recognize each other in the dark." },
       { x:51, y:56, size:8, cons:true, msg:"There is a quiet kind of magic in how I feel when I think of you." },
@@ -496,37 +493,35 @@
       { x:49, y:66, size:8, cons:true, msg:"You turned tenderness into something I could finally believe in." },
       { x:54, y:70, size:8, cons:true, msg:"Not every star is distant. Some feel like home." },
       { x:58, y:74, size:8, cons:true, msg:"The sky kept one shape hidden, waiting for you." },
-      { x:50, y:78, size:9, cons:true, msg:`Some constellations are just love trying to become visible.` },
+      { x:50, y:78, size:9, cons:true, msg:"Some constellations are just love trying to become visible." },
       { x:42, y:74, size:8, cons:true, msg:"Even in the coldest night, your memory leaves warmth." },
       { x:46, y:70, size:8, cons:true, msg:"A feeling this gentle still knows how to stay." }
     ];
 
-    // Heart-shaped constellation path (in SVG viewBox 0 0 100 160)
     const heartPoints = [
       [62,61],[57,56],[51,56],[46,61],[49,66],
       [54,70],[58,74],[50,78],[42,74],[46,70],[49,66]
     ];
 
-    /* ── DOM refs ── */
-    const sky             = document.getElementById("sky");
-    const overlay         = document.getElementById("popupOverlay");
-    const popupTitle      = document.getElementById("popupTitle");
-    const popupText       = document.getElementById("popupText");
-    const popupKicker     = document.getElementById("popupKicker");
-    const closePopup      = document.getElementById("closePopup");
-    const counterText     = document.getElementById("counterText");
-    const finalMessage    = document.getElementById("finalMessage");
-    const heartLine       = document.getElementById("heartLine");
-    const heartGlow       = document.getElementById("heartGlow");
-    const consLabel       = document.getElementById("constellationLabel");
-    const bgMusic         = document.getElementById("bgMusic");
-    const musicToggle     = document.getElementById("musicToggle");
+    const sky          = document.getElementById("sky");
+    const overlay      = document.getElementById("popupOverlay");
+    const popupTitle   = document.getElementById("popupTitle");
+    const popupText    = document.getElementById("popupText");
+    const popupKicker  = document.getElementById("popupKicker");
+    const closePopup   = document.getElementById("closePopup");
+    const counterText  = document.getElementById("counterText");
+    const finalMessage = document.getElementById("finalMessage");
+    const heartLine    = document.getElementById("heartLine");
+    const heartGlow    = document.getElementById("heartGlow");
+    const consLabel    = document.getElementById("constellationLabel");
+    const bgMusic      = document.getElementById("bgMusic");
+    const musicToggle  = document.getElementById("musicToggle");
+    const musicBars    = document.getElementById("musicBars");
 
-    const clicked   = new Set();
-    let consLocked  = false;
-    let musicOn     = false;
+    const clicked  = new Set();
+    let consLocked = false;
+    let musicOn    = false;
 
-    /* ── Constellation path ── */
     const pathD = heartPoints.map((p,i)=>`${i===0?"M":"L"}${p[0]} ${p[1]}`).join(" ");
     heartLine.setAttribute("d", pathD);
     heartGlow.setAttribute("d", pathD);
@@ -544,31 +539,26 @@
       consLabel.classList.remove("show");
     }
 
-    /* ── Popup ── */
     function openPopup(kicker, title, text){
-      popupKicker.textContent  = kicker;
-      popupTitle.textContent   = title;
-      popupText.textContent    = text;
+      popupKicker.textContent = kicker;
+      popupTitle.textContent  = title;
+      popupText.textContent   = text;
       overlay.classList.add("show");
     }
-    function closeModal(){
-      overlay.classList.remove("show");
-    }
+    function closeModal(){overlay.classList.remove("show")}
     closePopup.addEventListener("click", closeModal);
     overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
     document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
 
-    /* ── Counter + final reveal ── */
     function updateCounter(){
       const n = clicked.size;
       counterText.textContent = `${n} star${n===1?"":"s"} awakened`;
       if(n >= FINAL_UNLOCK_AFTER){
         finalMessage.classList.add("visible");
-        setTimeout(()=>finalMessage.scrollIntoView({behavior:"smooth",block:"center"}), 300);
+        setTimeout(()=>finalMessage.scrollIntoView({behavior:"smooth",block:"center"}),300);
       }
     }
 
-    /* ── Build ambient bg stars ── */
     function makeAmbient(count=150){
       for(let i=0;i<count;i++){
         const s = document.createElement("div");
@@ -585,7 +575,6 @@
       }
     }
 
-    /* ── Build interactive stars ── */
     function makeStars(){
       starsData.forEach((d,i)=>{
         const btn = document.createElement("button");
@@ -594,45 +583,34 @@
         if(d.special) btn.classList.add("special");
         if(d.cons)    btn.classList.add("constellation-star");
         btn.setAttribute("aria-label", d.special ? "Brightest star — Yousra" : "Message star");
-
         Object.assign(btn.style,{
           left: d.x+"%", top: d.y+"%",
           width: d.size+"px", height: d.size+"px",
           "--speed": `${3.2+Math.random()*2.8}s`,
           animationDelay: `${Math.random()*4}s`
         });
-
         if(d.cons){
           btn.addEventListener("mouseenter", ()=>showCons(false));
           btn.addEventListener("mouseleave", hideCons);
           btn.addEventListener("focus",      ()=>showCons(false));
           btn.addEventListener("blur",       hideCons);
         }
-
         btn.addEventListener("click",()=>{
           clicked.add(i);
           if(d.cons) showCons(true);
-
           if(d.special){
-            openPopup(
-              d.kicker || "The rarest light",
-              d.title  || HER_NAME,
-              d.msg
-            );
+            openPopup(d.kicker||"The rarest light", d.title||HER_NAME, d.msg);
           } else if(d.cons){
-            openPopup("The hidden constellation", "A secret written in light", d.msg);
+            openPopup("The hidden constellation","A secret written in light", d.msg);
           } else {
-            openPopup("A hidden star", "A small message", d.msg);
+            openPopup("A hidden star","A small message", d.msg);
           }
-
           updateCounter();
         });
-
         sky.appendChild(btn);
       });
     }
 
-    /* ── Floating particles ── */
     function makeParticles(count=22){
       for(let i=0;i<count;i++){
         const p = document.createElement("div");
@@ -649,26 +627,41 @@
       }
     }
 
-    /* ── Music ── */
+    /* ── Music with animated bars ── */
     musicToggle.addEventListener("click", async()=>{
       try{
         if(!musicOn){
+          bgMusic.volume = 0;
           await bgMusic.play();
+          // Fade in gently
+          let v = 0;
+          const fade = setInterval(()=>{
+            v = Math.min(v + 0.04, 0.65);
+            bgMusic.volume = v;
+            if(v >= 0.65) clearInterval(fade);
+          }, 80);
           musicOn = true;
-          musicToggle.textContent = "♪ Pause music";
           musicToggle.classList.add("playing");
+          musicBars.classList.add("active");
+          musicToggle.childNodes[0].textContent = "♪ Pause music ";
         } else {
-          bgMusic.pause();
+          // Fade out gently
+          let v = bgMusic.volume;
+          const fade = setInterval(()=>{
+            v = Math.max(v - 0.05, 0);
+            bgMusic.volume = v;
+            if(v <= 0){ clearInterval(fade); bgMusic.pause(); }
+          }, 60);
           musicOn = false;
-          musicToggle.textContent = "♪ Play music";
           musicToggle.classList.remove("playing");
+          musicBars.classList.remove("active");
+          musicToggle.childNodes[0].textContent = "♪ Play music ";
         }
-      } catch(_){
-        musicToggle.textContent = "Add music.mp3 to enable";
+      } catch(err){
+        musicToggle.childNodes[0].textContent = "♪ Click again ";
       }
     });
 
-    /* ── Init ── */
     makeAmbient();
     makeStars();
     makeParticles();
