@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Universe for Yousra</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg-1:#02030b;
+      --bg-2:#07101f;
+      --bg-3:#0d1830;
+      --text:#eef3ff;
+      --muted:#b8c5ea;
+      --glow:#b8d5ff;
+      --accent:#fff2c7;
+      --rose:#ffd9f2;
+      --panel:rgba(12,18,35,0.72);
+      --border:rgba(255,255,255,0.1);
+      --shadow:0 0 30px rgba(180,210,255,0.18), 0 0 80px rgba(255,255,255,0.05);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+
+    body{
+      min-height:100vh;
+      font-family:'Inter', system-ui, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(90,120,255,0.12), transparent 28%),
+        radial-gradient(circle at 80% 15%, rgba(255,220,245,0.08), transparent 22%),
+        radial-gradient(circle at 50% 80%, rgba(120,170,255,0.08), transparent 30%),
+        linear-gradient(180deg, var(--bg-3) 0%, var(--bg-2) 35%, var(--bg-1) 100%);
+      overflow-x:hidden;
+    }
+
+    /* ── Nebula ── */
+    .nebula{position:fixed;inset:0;pointer-events:none;z-index:0}
+    .nebula::before,.nebula::after{content:"";position:absolute;inset:0}
+    .nebula::before{
+      background:
+        radial-gradient(circle at 30% 40%, rgba(124,159,255,0.13), transparent 22%),
+        radial-gradient(circle at 70% 60%, rgba(255,200,230,0.09), transparent 18%);
+      filter:blur(30px);
+      animation:drift 22s ease-in-out infinite alternate;
+    }
+    .nebula::after{
+      background:
+        radial-gradient(circle at 65% 25%, rgba(193,224,255,0.09), transparent 20%),
+        radial-gradient(circle at 35% 75%, rgba(164,126,255,0.09), transparent 18%);
+      filter:blur(50px);
+      animation:drift 30s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes drift{
+      from{transform:translateY(-10px) translateX(-8px) scale(1)}
+      to{transform:translateY(12px) translateX(10px) scale(1.04)}
+    }
+
+    /* ── Hero ── */
+    .hero{
+      position:relative;z-index:2;
+      min-height:100vh;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      text-align:center;padding:24px;
+    }
+    .hero::after{
+      content:"";position:absolute;inset:auto 0 -1px 0;height:200px;
+      background:linear-gradient(to bottom,transparent,rgba(2,3,11,0.9));
+      pointer-events:none;
+    }
+
+    .eyebrow{
+      letter-spacing:0.24em;text-transform:uppercase;
+      font-size:0.72rem;color:var(--muted);opacity:0.85;
+      margin-bottom:16px;
+    }
+
+    h1{
+      font-family:'Cormorant Garamond',serif;
+      font-weight:300;font-style:italic;
+      font-size:clamp(2.8rem, 7vw, 6rem);
+      line-height:1.06;letter-spacing:0.015em;
+      max-width:900px;
+      text-shadow:0 0 28px rgba(200,220,255,0.16);
+    }
+
+    h1 em{
+      font-style:normal;
+      background:linear-gradient(120deg, #fff9e8, #ffebd0, #ffd9f2, #cce0ff);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      filter:drop-shadow(0 0 14px rgba(255,235,200,0.25));
+    }
+
+    .hero-sub{
+      margin:20px auto 0;max-width:680px;
+      font-size:clamp(0.95rem, 2vw, 1.1rem);
+      line-height:1.85;color:var(--muted);
+      font-weight:300;
+    }
+
+    .hero-actions{
+      margin-top:34px;display:flex;gap:14px;
+      flex-wrap:wrap;justify-content:center;
+    }
+
+    .btn{
+      border:1px solid var(--border);
+      background:rgba(255,255,255,0.04);
+      color:var(--text);
+      padding:13px 22px;border-radius:999px;
+      cursor:pointer;font-size:0.92rem;
+      backdrop-filter:blur(12px);
+      transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease,background .35s ease;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      border-color:rgba(255,255,255,0.24);
+      box-shadow:0 10px 32px rgba(116,150,255,0.16);
+      background:rgba(255,255,255,0.07);
+    }
+    .btn.primary{
+      background:rgba(255,245,220,0.07);
+      border-color:rgba(255,245,200,0.2);
+    }
+    .btn.primary:hover{
+      background:rgba(255,245,220,0.12);
+      border-color:rgba(255,245,200,0.35);
+      box-shadow:0 10px 35px rgba(255,235,160,0.12);
+    }
+
+    /* ── Sky ── */
+    .sky-section{position:relative;z-index:2;min-height:160vh;padding:20px 0 100px}
+
+    .section-note{
+      position:sticky;top:14px;
+      width:min(900px,calc(100% - 32px));
+      margin:0 auto 14px;z-index:5;
+      display:flex;justify-content:space-between;align-items:center;gap:12px;
+      padding:13px 18px;
+      border:1px solid rgba(255,255,255,0.08);
+      background:rgba(6,10,22,0.5);
+      backdrop-filter:blur(12px);border-radius:18px;
+      color:var(--muted);font-size:0.88rem;
+      box-shadow:var(--shadow);
+    }
+
+    .counter{color:#fff;opacity:0.95;white-space:nowrap;font-size:0.88rem}
+
+    #sky{
+      position:relative;width:min(1200px,100%);
+      margin:0 auto;min-height:155vh;overflow:hidden;
+    }
+
+    /* ── Stars ── */
+    .ambient-star{
+      position:absolute;border:none;border-radius:50%;
+      background:rgba(255,255,255,0.85);opacity:0.5;
+      animation:twinkle var(--twinkle,5s) ease-in-out infinite;
+      pointer-events:none;
+      filter:drop-shadow(0 0 5px rgba(255,255,255,0.25));
+    }
+
+    .star{
+      position:absolute;border:none;border-radius:50%;
+      cursor:pointer;transform:translate(-50%,-50%);outline:none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,245,210,.95) 36%, rgba(201,224,255,.65) 64%, rgba(255,255,255,.02) 100%);
+      box-shadow:
+        0 0 10px rgba(255,255,255,.8),
+        0 0 20px rgba(181,216,255,.55),
+        0 0 40px rgba(164,199,255,.18);
+      animation:twinkle var(--speed,4.6s) ease-in-out infinite;
+      transition:transform .35s ease,box-shadow .35s ease,filter .35s ease;
+      z-index:3;
+    }
+
+    .star::before{
+      content:"";position:absolute;inset:-14px;border-radius:50%;
+      background:radial-gradient(circle,rgba(255,255,255,.18),transparent 65%);
+      opacity:0;transition:opacity .35s ease;
+    }
+    .star:hover,.star:focus-visible{
+      transform:translate(-50%,-50%) scale(1.2);
+      box-shadow:
+        0 0 12px rgba(255,255,255,1),
+        0 0 30px rgba(210,231,255,.8),
+        0 0 70px rgba(162,187,255,.35);
+    }
+    .star:hover::before,.star:focus-visible::before{opacity:1}
+
+    .star.special{
+      background:
+        radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,242,196,1) 28%, rgba(200,226,255,.95) 52%, rgba(165,205,255,.12) 100%);
+      box-shadow:
+        0 0 18px rgba(255,255,255,1),
+        0 0 45px rgba(255,242,196,.8),
+        0 0 90px rgba(170,210,255,.35);
+      animation:twinkleSpecial 4.2s ease-in-out infinite;
+    }
+
+    .star.constellation-star{
+      box-shadow:
+        0 0 10px rgba(255,255,255,.9),
+        0 0 24px rgba(255,185,225,.4),
+        0 0 45px rgba(171,203,255,.18);
+    }
+
+    @keyframes twinkle{
+      0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(.98)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+    }
+    @keyframes twinkleSpecial{
+      0%,100%{opacity:.85;transform:translate(-50%,-50%) scale(1)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.13)}
+    }
+
+    /* ── Shooting stars ── */
+    .shooting-star{
+      position:absolute;width:2px;height:120px;
+      background:linear-gradient(to bottom,rgba(255,255,255,.9),transparent);
+      opacity:0;transform:rotate(35deg);
+      filter:drop-shadow(0 0 10px rgba(255,255,255,.6));
+      animation:shoot 8s linear infinite;
+      pointer-events:none;z-index:1;
+    }
+    .shooting-star:nth-child(1){top:8%;left:76%;animation-delay:1.5s}
+    .shooting-star:nth-child(2){top:28%;left:12%;animation-delay:5.5s}
+    .shooting-star:nth-child(3){top:62%;left:84%;animation-delay:10s}
+
+    @keyframes shoot{
+      0%{opacity:0;transform:translate(0,0) rotate(35deg)}
+      8%{opacity:1}
+      20%{opacity:0;transform:translate(-190px,210px) rotate(35deg)}
+      100%{opacity:0;transform:translate(-190px,210px) rotate(35deg)}
+    }
+
+    /* ── Constellation ── */
+    #constellationSvg{
+      position:absolute;inset:0;width:100%;height:100%;
+      z-index:2;pointer-events:none;overflow:visible;
+    }
+    .constellation-line{
+      stroke:rgba(255,210,235,.92);stroke-width:2.2;fill:none;
+      stroke-linecap:round;stroke-linejoin:round;
+      filter:drop-shadow(0 0 10px rgba(255,210,235,.65));
+      opacity:0;transition:opacity .9s ease;
+    }
+    .constellation-glow{
+      stroke:rgba(200,225,255,.3);stroke-width:10;fill:none;
+      stroke-linecap:round;opacity:0;filter:blur(4px);
+      transition:opacity .9s ease;
+    }
+
+    #constellationLabel{
+      position:absolute;left:50%;top:57%;
+      transform:translate(-50%,-50%);
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(1.3rem,2.8vw,2.2rem);
+      letter-spacing:0.32em;text-transform:uppercase;
+      color:rgba(255,235,244,.92);
+      text-shadow:0 0 22px rgba(255,215,235,.4);
+      opacity:0;transition:opacity .9s ease,transform .9s ease;
+      pointer-events:none;z-index:4;
+    }
+    #constellationLabel.show{
+      opacity:1;transform:translate(-50%,-66%);
+    }
+
+    /* ── Popup ── */
+    .popup-overlay{
+      position:fixed;inset:0;
+      background:rgba(2,4,12,.65);
+      backdrop-filter:blur(10px);
+      display:flex;align-items:center;justify-content:center;
+      padding:20px;opacity:0;visibility:hidden;
+      transition:opacity .4s ease,visibility .4s ease;z-index:20;
+    }
+    .popup-overlay.show{opacity:1;visibility:visible}
+
+    .popup{
+      width:min(580px,100%);
+      background:linear-gradient(165deg, rgba(14,20,42,.96), rgba(8,12,26,.97));
+      border:1px solid rgba(255,255,255,.13);border-radius:28px;
+      padding:32px 28px;
+      box-shadow:
+        0 0 35px rgba(164,201,255,.2),
+        0 0 110px rgba(89,112,255,.08);
+      transform:translateY(18px) scale(.97);
+      transition:transform .45s ease;position:relative;overflow:hidden;
+    }
+    .popup-overlay.show .popup{transform:translateY(0) scale(1)}
+
+    .popup::before{
+      content:"";position:absolute;width:250px;height:250px;
+      right:-80px;top:-80px;pointer-events:none;
+      background:radial-gradient(circle,rgba(190,220,255,.14),transparent 70%);
+    }
+    .popup::after{
+      content:"";position:absolute;width:180px;height:180px;
+      left:-60px;bottom:-60px;pointer-events:none;
+      background:radial-gradient(circle,rgba(255,190,230,.1),transparent 70%);
+    }
+
+    .popup-kicker{
+      font-size:0.73rem;text-transform:uppercase;
+      letter-spacing:0.22em;color:var(--muted);margin-bottom:12px;
+    }
+    .popup h2{
+      font-family:'Cormorant Garamond',serif;
+      font-weight:400;font-size:clamp(1.5rem,3.2vw,2.2rem);
+      line-height:1.2;margin-bottom:14px;
+    }
+    .popup p{color:#dce6ff;line-height:1.92;font-size:1rem;font-weight:300}
+
+    .close-btn{
+      margin-top:24px;border:none;border-radius:999px;
+      padding:12px 20px;color:var(--text);cursor:pointer;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1);font-size:0.88rem;
+      transition:background .25s ease,transform .25s ease;
+    }
+    .close-btn:hover{background:rgba(255,255,255,.11);transform:translateY(-1px)}
+
+    /* ── Final message ── */
+    .final-message{
+      width:min(800px,calc(100% - 32px));
+      margin:110px auto 0;padding:40px 28px;
+      border-radius:32px;border:1px solid rgba(255,255,255,.09);
+      background:linear-gradient(160deg,rgba(12,17,32,.65),rgba(7,11,22,.68));
+      backdrop-filter:blur(12px);text-align:center;
+      opacity:0;transform:translateY(32px);
+      transition:opacity 1.3s ease,transform 1.3s ease,box-shadow 1.3s ease;
+      box-shadow:0 0 0 rgba(0,0,0,0);position:relative;z-index:2;
+    }
+    .final-message.visible{
+      opacity:1;transform:translateY(0);
+      box-shadow:0 0 55px rgba(184,211,255,.15);
+    }
+    .final-message .small{
+      text-transform:uppercase;letter-spacing:0.2em;
+      font-size:0.75rem;color:var(--muted);margin-bottom:16px;
+    }
+    .final-message h3{
+      font-family:'Cormorant Garamond',serif;
+      font-weight:300;font-style:italic;
+      font-size:clamp(1.8rem,4.5vw,3.2rem);
+      line-height:1.25;
+      text-shadow:0 0 24px rgba(200,220,255,.14);
+    }
+    .final-message .name-signed{
+      margin-top:22px;font-size:0.85rem;
+      letter-spacing:0.15em;color:rgba(255,235,244,.55);
+    }
+
+    .footer-note{
+      text-align:center;color:rgba(184,197,234,.5);
+      margin:28px 0 10px;font-size:0.82rem;
+      z-index:2;position:relative;
+    }
+
+    /* ── Particles ── */
+    .particle{
+      position:fixed;bottom:-30px;border-radius:50%;
+      background:rgba(225,235,255,.5);
+      box-shadow:0 0 12px rgba(190,210,255,.2);
+      pointer-events:none;
+      animation:floatUp linear infinite;z-index:1;
+    }
+    @keyframes floatUp{
+      from{transform:translateY(0) translateX(0) scale(.8);opacity:0}
+      10%{opacity:.65}
+      80%{opacity:.3}
+      to{transform:translateY(-110vh) translateX(var(--drift,12px)) scale(1.4);opacity:0}
+    }
+
+    /* ── Music pill ── */
+    #musicToggle.playing{
+      border-color:rgba(255,230,160,.28);
+      background:rgba(255,240,160,.06);
+      box-shadow:0 0 22px rgba(255,235,130,.1);
+    }
+
+    @media(max-width:700px){
+      .section-note{flex-direction:column;align-items:flex-start}
+      .hero-actions{flex-direction:column}
+      .btn{width:100%;max-width:320px}
+      #constellationLabel{letter-spacing:0.2em}
+    }
+  </style>
+</head>
+<body>
+  <div class="nebula"></div>
+
+  <!-- ══ HERO ══ -->
+  <section class="hero" id="top">
+    <div class="eyebrow">A private universe, made for one</div>
+    <h1>Somewhere in all of this,<br>I only ever see <em>Yousra</em>.</h1>
+    <p class="hero-sub">
+      Every star out there is keeping a secret.<br>
+      Touch them gently — the night has a lot to say.
+    </p>
+    <div class="hero-actions">
+      <a href="#skyStart" class="btn primary">Enter the night sky ✦</a>
+      <button class="btn" id="musicToggle" type="button">♪ Play music</button>
+    </div>
+  </section>
+
+  <!-- ══ STAR MAP ══ -->
+  <section class="sky-section" id="skyStart">
+    <div class="section-note">
+      <span>✦ Click the stars. Hover the bright cluster to reveal something hidden.</span>
+      <span class="counter" id="counterText">0 stars awakened</span>
+    </div>
+
+    <div id="sky">
+      <svg id="constellationSvg" viewBox="0 0 100 160" preserveAspectRatio="none">
+        <path id="heartGlow" class="constellation-glow"></path>
+        <path id="heartLine" class="constellation-line"></path>
+      </svg>
+
+      <div id="constellationLabel">Yousra</div>
+
+      <div class="shooting-star"></div>
+      <div class="shooting-star"></div>
+      <div class="shooting-star"></div>
+    </div>
+
+    <!-- ══ FINAL MESSAGE ══ -->
+    <div class="final-message" id="finalMessage">
+      <div class="small">The last thing the sky wanted you to know</div>
+      <h3>"If the universe is infinite,<br>then my feelings for you might be too."</h3>
+      <div class="name-signed">— written in the stars, just for Yousra</div>
+    </div>
+
+    <div class="footer-note">Add a music.mp3 next to this file to enable the music button.</div>
+  </section>
+
+  <!-- ══ POPUP ══ -->
+  <div class="popup-overlay" id="popupOverlay">
+    <div class="popup">
+      <div class="popup-kicker" id="popupKicker">A hidden star</div>
+      <h2 id="popupTitle"></h2>
+      <p id="popupText"></p>
+      <button class="close-btn" id="closePopup" type="button">Close ✕</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="music.mp3" type="audio/mpeg" />
+  </audio>
+
+  <script>
+    /* ── Data ── */
+    const HER_NAME = "Yousra";
+    const FINAL_UNLOCK_AFTER = 6;
+
+    const messages = [
+      "Some people feel like chance. You feel like destiny wearing starlight.",
+      "Even silence becomes beautiful when I imagine you somewhere beneath the same sky.",
+      "There are nights that fade, and then there are moments with you that stay glowing.",
+      "You have a way of making the world feel softer, kinder, and somehow closer.",
+      "If peace had a light, I think it would look exactly like you.",
+      "The universe is vast, but my heart keeps choosing the same direction.",
+      "You make ordinary moments feel rare, like finding warmth in the middle of space.",
+      "Every soft feeling I never knew how to name started making sense when you arrived."
+    ];
+
+    const starsData = [
+      // Regular stars
+      { x:16, y:18, size:10, msg:messages[0] },
+      { x:28, y:30, size: 8, msg:messages[1] },
+      { x:81, y:24, size: 9, msg:messages[2] },
+      { x:73, y:39, size: 8, msg:messages[3] },
+      { x:23, y:52, size: 9, msg:messages[4] },
+      { x:14, y:74, size:10, msg:messages[5] },
+      { x:78, y:79, size: 9, msg:messages[6] },
+      { x:37, y:88, size: 8, msg:messages[7] },
+
+      // Special center star
+      {
+        x:50, y:38, size:26,
+        special:true,
+        title:"The brightest star",
+        kicker:"The rarest light in the universe",
+        msg:`Out of billions of stars, somehow you're the only one I see.`
+      },
+
+      // Constellation stars (form a heart around y=62%)
+      { x:62, y:61, size:9, cons:true, msg:"Some lights are not meant to be found by everyone." },
+      { x:57, y:56, size:8, cons:true, msg:"Some hearts recognize each other in the dark." },
+      { x:51, y:56, size:8, cons:true, msg:"There is a quiet kind of magic in how I feel when I think of you." },
+      { x:46, y:61, size:9, cons:true, msg:"Even distance would still leave your light with me." },
+      { x:49, y:66, size:8, cons:true, msg:"You turned tenderness into something I could finally believe in." },
+      { x:54, y:70, size:8, cons:true, msg:"Not every star is distant. Some feel like home." },
+      { x:58, y:74, size:8, cons:true, msg:"The sky kept one shape hidden, waiting for you." },
+      { x:50, y:78, size:9, cons:true, msg:`Some constellations are just love trying to become visible.` },
+      { x:42, y:74, size:8, cons:true, msg:"Even in the coldest night, your memory leaves warmth." },
+      { x:46, y:70, size:8, cons:true, msg:"A feeling this gentle still knows how to stay." }
+    ];
+
+    // Heart-shaped constellation path (in SVG viewBox 0 0 100 160)
+    const heartPoints = [
+      [62,61],[57,56],[51,56],[46,61],[49,66],
+      [54,70],[58,74],[50,78],[42,74],[46,70],[49,66]
+    ];
+
+    /* ── DOM refs ── */
+    const sky             = document.getElementById("sky");
+    const overlay         = document.getElementById("popupOverlay");
+    const popupTitle      = document.getElementById("popupTitle");
+    const popupText       = document.getElementById("popupText");
+    const popupKicker     = document.getElementById("popupKicker");
+    const closePopup      = document.getElementById("closePopup");
+    const counterText     = document.getElementById("counterText");
+    const finalMessage    = document.getElementById("finalMessage");
+    const heartLine       = document.getElementById("heartLine");
+    const heartGlow       = document.getElementById("heartGlow");
+    const consLabel       = document.getElementById("constellationLabel");
+    const bgMusic         = document.getElementById("bgMusic");
+    const musicToggle     = document.getElementById("musicToggle");
+
+    const clicked   = new Set();
+    let consLocked  = false;
+    let musicOn     = false;
+
+    /* ── Constellation path ── */
+    const pathD = heartPoints.map((p,i)=>`${i===0?"M":"L"}${p[0]} ${p[1]}`).join(" ");
+    heartLine.setAttribute("d", pathD);
+    heartGlow.setAttribute("d", pathD);
+
+    function showCons(lock=false){
+      if(lock) consLocked = true;
+      heartLine.style.opacity = "1";
+      heartGlow.style.opacity = "1";
+      consLabel.classList.add("show");
+    }
+    function hideCons(){
+      if(consLocked) return;
+      heartLine.style.opacity = "0";
+      heartGlow.style.opacity = "0";
+      consLabel.classList.remove("show");
+    }
+
+    /* ── Popup ── */
+    function openPopup(kicker, title, text){
+      popupKicker.textContent  = kicker;
+      popupTitle.textContent   = title;
+      popupText.textContent    = text;
+      overlay.classList.add("show");
+    }
+    function closeModal(){
+      overlay.classList.remove("show");
+    }
+    closePopup.addEventListener("click", closeModal);
+    overlay.addEventListener("click", e=>{ if(e.target===overlay) closeModal(); });
+    document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeModal(); });
+
+    /* ── Counter + final reveal ── */
+    function updateCounter(){
+      const n = clicked.size;
+      counterText.textContent = `${n} star${n===1?"":"s"} awakened`;
+      if(n >= FINAL_UNLOCK_AFTER){
+        finalMessage.classList.add("visible");
+        setTimeout(()=>finalMessage.scrollIntoView({behavior:"smooth",block:"center"}), 300);
+      }
+    }
+
+    /* ── Build ambient bg stars ── */
+    function makeAmbient(count=150){
+      for(let i=0;i<count;i++){
+        const s = document.createElement("div");
+        s.className = "ambient-star";
+        const sz = Math.random()*2.6+0.9;
+        Object.assign(s.style,{
+          left: Math.random()*100+"%",
+          top:  Math.random()*100+"%",
+          width: sz+"px", height: sz+"px",
+          "--twinkle": `${3+Math.random()*6}s`,
+          animationDelay: `${Math.random()*6}s`
+        });
+        sky.appendChild(s);
+      }
+    }
+
+    /* ── Build interactive stars ── */
+    function makeStars(){
+      starsData.forEach((d,i)=>{
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "star";
+        if(d.special) btn.classList.add("special");
+        if(d.cons)    btn.classList.add("constellation-star");
+        btn.setAttribute("aria-label", d.special ? "Brightest star — Yousra" : "Message star");
+
+        Object.assign(btn.style,{
+          left: d.x+"%", top: d.y+"%",
+          width: d.size+"px", height: d.size+"px",
+          "--speed": `${3.2+Math.random()*2.8}s`,
+          animationDelay: `${Math.random()*4}s`
+        });
+
+        if(d.cons){
+          btn.addEventListener("mouseenter", ()=>showCons(false));
+          btn.addEventListener("mouseleave", hideCons);
+          btn.addEventListener("focus",      ()=>showCons(false));
+          btn.addEventListener("blur",       hideCons);
+        }
+
+        btn.addEventListener("click",()=>{
+          clicked.add(i);
+          if(d.cons) showCons(true);
+
+          if(d.special){
+            openPopup(
+              d.kicker || "The rarest light",
+              d.title  || HER_NAME,
+              d.msg
+            );
+          } else if(d.cons){
+            openPopup("The hidden constellation", "A secret written in light", d.msg);
+          } else {
+            openPopup("A hidden star", "A small message", d.msg);
+          }
+
+          updateCounter();
+        });
+
+        sky.appendChild(btn);
+      });
+    }
+
+    /* ── Floating particles ── */
+    function makeParticles(count=22){
+      for(let i=0;i<count;i++){
+        const p = document.createElement("div");
+        p.className = "particle";
+        const sz = Math.random()*3+2;
+        Object.assign(p.style,{
+          left: Math.random()*100+"vw",
+          width: sz+"px", height: sz+"px",
+          animationDuration: `${10+Math.random()*18}s`,
+          animationDelay:    `${Math.random()*14}s`,
+          "--drift": `${(Math.random()*70-35).toFixed(0)}px`
+        });
+        document.body.appendChild(p);
+      }
+    }
+
+    /* ── Music ── */
+    musicToggle.addEventListener("click", async()=>{
+      try{
+        if(!musicOn){
+          await bgMusic.play();
+          musicOn = true;
+          musicToggle.textContent = "♪ Pause music";
+          musicToggle.classList.add("playing");
+        } else {
+          bgMusic.pause();
+          musicOn = false;
+          musicToggle.textContent = "♪ Play music";
+          musicToggle.classList.remove("playing");
+        }
+      } catch(_){
+        musicToggle.textContent = "Add music.mp3 to enable";
+      }
+    });
+
+    /* ── Init ── */
+    makeAmbient();
+    makeStars();
+    makeParticles();
+    updateCounter();
+  </script>
+</body>
+</html>
