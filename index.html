@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yousra System Upgrade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-0:#03050d;
+      --bg-1:#07101f;
+      --bg-2:#0c1830;
+      --surface:rgba(13,19,38,.72);
+      --surface-2:rgba(18,27,52,.72);
+      --text:#eef3ff;
+      --muted:#9cadce;
+      --line:rgba(166,195,255,.18);
+      --glow:rgba(170,212,255,.24);
+      --pink:#ffd9ef;
+      --gold:#fff1be;
+      --cyan:#aee9ff;
+      --success:#b5ffc5;
+      --radius:24px;
+      --shadow:0 24px 70px rgba(5,9,20,.45);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      font-family:'Inter',system-ui,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(87,133,255,.18), transparent 24%),
+        radial-gradient(circle at 80% 18%, rgba(255,185,228,.10), transparent 20%),
+        radial-gradient(circle at 45% 75%, rgba(87,208,255,.10), transparent 28%),
+        linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 42%, var(--bg-0) 100%);
+      cursor:none;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background:radial-gradient(circle at center, transparent 0, rgba(0,0,0,.18) 70%, rgba(0,0,0,.48) 100%);
+      z-index:0;
+    }
+
+    .cursor-dot,.cursor-ring{
+      position:fixed;
+      left:0;top:0;
+      pointer-events:none;
+      z-index:60;
+      mix-blend-mode:screen;
+    }
+
+    .cursor-dot{
+      width:12px;height:12px;
+      border-radius:50%;
+      background:radial-gradient(circle, #fff 0%, #fff6d8 35%, rgba(255,255,255,.1) 100%);
+      box-shadow:0 0 16px rgba(255,255,255,.95),0 0 30px rgba(175,220,255,.4);
+      transform:translate(-50%,-50%);
+    }
+
+    .cursor-dot::before,.cursor-dot::after{
+      content:"";
+      position:absolute;
+      left:50%;top:50%;
+      background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.92), rgba(255,255,255,0));
+      transform:translate(-50%,-50%);
+      border-radius:999px;
+    }
+
+    .cursor-dot::before{width:2px;height:26px}
+    .cursor-dot::after{width:26px;height:2px}
+
+    .cursor-ring{
+      width:34px;height:34px;
+      border:1px solid rgba(196,222,255,.38);
+      border-radius:50%;
+      transform:translate(-50%,-50%);
+    }
+
+    @media (hover:none), (pointer:coarse){
+      body{cursor:auto}
+      .cursor-dot,.cursor-ring{display:none}
+    }
+
+    .loading-screen{
+      position:fixed;
+      inset:0;
+      z-index:50;
+      display:grid;
+      place-items:center;
+      padding:24px;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(125,180,255,.12), transparent 30%),
+        linear-gradient(180deg, #02040b 0%, #08101e 100%);
+      transition:opacity 1s ease, visibility 1s ease;
+    }
+
+    .loading-screen.hidden{
+      opacity:0;
+      visibility:hidden;
+    }
+
+    .boot-panel{
+      width:min(680px,100%);
+      padding:28px;
+      border:1px solid var(--line);
+      border-radius:28px;
+      background:rgba(10,16,32,.76);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+    }
+
+    .boot-title,.hero-kicker,.section-kicker,.log-title,.popup-kicker{
+      font-family:'Orbitron','Inter',sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+    }
+
+    .boot-title{
+      font-size:.88rem;
+      color:var(--cyan);
+      margin-bottom:24px;
+    }
+
+    .boot-line{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      padding:14px 0;
+      border-bottom:1px solid rgba(255,255,255,.05);
+      color:var(--text);
+      opacity:0;
+      transform:translateY(12px);
+      animation:lineIn .7s forwards;
+    }
+
+    .boot-line:nth-child(2){animation-delay:.25s}
+    .boot-line:nth-child(3){animation-delay:.8s}
+    .boot-line:nth-child(4){animation-delay:1.35s}
+    .boot-line:nth-child(5){animation-delay:1.95s}
+
+    .boot-status{color:var(--success);font-size:.9rem}
+
+    .boot-progress{
+      margin-top:22px;
+      height:10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.06);
+      overflow:hidden;
+    }
+
+    .boot-progress span{
+      display:block;
+      width:0;height:100%;
+      background:linear-gradient(90deg, rgba(175,232,255,.5), rgba(255,224,242,.95));
+      box-shadow:0 0 18px rgba(194,227,255,.45);
+      animation:progress 3.1s ease forwards;
+    }
+
+    .boot-complete{
+      margin-top:20px;
+      color:var(--gold);
+      opacity:0;
+      animation:lineIn .8s forwards;
+      animation-delay:2.65s;
+    }
+
+    @keyframes progress{from{width:0}to{width:100%}}
+    @keyframes lineIn{to{opacity:1;transform:translateY(0)}}
+
+    .ambient,.ambient::before,.ambient::after{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      content:"";
+    }
+
+    .ambient::before{
+      background:
+        radial-gradient(circle at 28% 38%, rgba(100,149,255,.12), transparent 24%),
+        radial-gradient(circle at 70% 68%, rgba(255,198,231,.08), transparent 18%);
+      filter:blur(28px);
+      animation:drift 20s ease-in-out infinite alternate;
+    }
+
+    .ambient::after{
+      background:
+        radial-gradient(circle at 66% 24%, rgba(175,228,255,.08), transparent 22%),
+        radial-gradient(circle at 36% 76%, rgba(160,132,255,.08), transparent 18%);
+      filter:blur(52px);
+      animation:drift 28s ease-in-out infinite alternate-reverse;
+    }
+
+    @keyframes drift{
+      from{transform:translate(-8px,-10px) scale(1)}
+      to{transform:translate(12px,10px) scale(1.05)}
+    }
+
+    .shell{position:relative;z-index:2}
+
+    .hero{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:48px 20px 24px;
+    }
+
+    .hero-panel{
+      width:min(1180px,100%);
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:24px;
+      align-items:stretch;
+    }
+
+    .glass{
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(11,18,36,.76), rgba(8,14,28,.72));
+      border-radius:30px;
+      backdrop-filter:blur(16px);
+      box-shadow:var(--shadow);
+    }
+
+    .hero-copy{
+      padding:40px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .hero-copy::before{
+      content:"";
+      position:absolute;
+      width:280px;height:280px;
+      right:-70px;top:-80px;
+      background:radial-gradient(circle, rgba(179,217,255,.14), transparent 70%);
+      pointer-events:none;
+    }
+
+    .hero-kicker,.section-kicker,.log-title,.popup-kicker{
+      font-size:.74rem;
+      color:var(--cyan);
+      margin-bottom:14px;
+    }
+
+    .hero h1,.popup h2,.final-message h3{
+      margin:0;
+      line-height:1.05;
+      font-weight:600;
+    }
+
+    .hero h1{
+      font-size:clamp(2.4rem,6vw,5rem);
+      margin-bottom:18px;
+      max-width:12ch;
+    }
+
+    .hero h1 span{
+      color:var(--pink);
+      text-shadow:0 0 18px rgba(255,217,239,.22);
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      max-width:62ch;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-top:28px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:46px;
+      padding:0 18px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      text-decoration:none;
+      cursor:pointer;
+      transition:transform .28s ease, background .28s ease, border-color .28s ease, box-shadow .28s ease;
+    }
+
+    .btn:hover{
+      transform:translateY(-2px);
+      background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.18);
+      box-shadow:0 12px 28px rgba(65,99,177,.18);
+    }
+
+    .btn.primary{
+      background:linear-gradient(90deg, rgba(154,215,255,.18), rgba(255,216,239,.16));
+      border-color:rgba(197,226,255,.28);
+    }
+
+    .hero-side{
+      padding:24px;
+      display:grid;
+      gap:14px;
+      align-content:start;
+    }
+
+    .mini-card{
+      padding:18px;
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:24px;
+      background:rgba(255,255,255,.03);
+    }
+
+    .mini-label{
+      font-size:.75rem;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+      color:var(--muted);
+      margin-bottom:8px;
+    }
+
+    .mini-value{
+      font-size:1.05rem;
+      line-height:1.7;
+    }
+
+    .status-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(183,255,197,.07);
+      color:var(--success);
+      border:1px solid rgba(183,255,197,.14);
+      width:fit-content;
+    }
+
+    .sky-section,.log-section{
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto;
+    }
+
+    .section-top{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:18px;
+    }
+
+    .section-top h2,.log-header h2{
+      margin:0;
+      font-size:clamp(1.6rem,3.6vw,2.5rem);
+      line-height:1.12;
+    }
+
+    .section-top p,.log-header p{
+      margin:8px 0 0;
+      color:var(--muted);
+      max-width:58ch;
+      line-height:1.8;
+    }
+
+    .hud{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:end;
+    }
+
+    .hud-item{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:.9rem;
+      color:var(--muted);
+    }
+
+    .star-map{
+      position:relative;
+      min-height:1200px;
+      border-radius:34px;
+      border:1px solid var(--line);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(122,173,255,.08), transparent 35%),
+        linear-gradient(180deg, rgba(9,16,33,.82), rgba(5,9,18,.84));
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+
+    #starSvg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index:2;
+    }
+
+    .link-line{
+      stroke:rgba(172,216,255,.35);
+      stroke-width:1.5;
+      stroke-linecap:round;
+      opacity:.16;
+    }
+
+    .memory-link{
+      stroke:rgba(255,214,235,.9);
+      stroke-width:2;
+      opacity:0;
+      transition:opacity .6s ease;
+      filter:drop-shadow(0 0 12px rgba(255,214,235,.5));
+    }
+
+    .memory-link.active{opacity:1}
+
+    .ambient-star,.star{
+      position:absolute;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+    }
+
+    .ambient-star{
+      background:rgba(255,255,255,.82);
+      opacity:.5;
+      pointer-events:none;
+      animation:twinkle var(--speed, 5s) ease-in-out infinite;
+      box-shadow:0 0 8px rgba(255,255,255,.3);
+    }
+
+    .star{
+      border:none;
+      cursor:pointer;
+      z-index:3;
+      background:radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,247,210,.98) 30%, rgba(193,225,255,.7) 63%, rgba(255,255,255,.02) 100%);
+      box-shadow:0 0 14px rgba(255,255,255,.85), 0 0 30px rgba(173,216,255,.32);
+      transition:transform .3s ease, box-shadow .3s ease;
+      animation:twinkle var(--speed, 4.8s) ease-in-out infinite;
+    }
+
+    .star:hover,.star:focus-visible{
+      transform:translate(-50%,-50%) scale(1.18);
+      box-shadow:0 0 18px rgba(255,255,255,1), 0 0 42px rgba(197,226,255,.5), 0 0 80px rgba(176,204,255,.18);
+    }
+
+    .star.memory{
+      box-shadow:0 0 14px rgba(255,255,255,.86), 0 0 36px rgba(255,207,231,.34);
+    }
+
+    .star.core{
+      box-shadow:0 0 20px rgba(255,255,255,1), 0 0 60px rgba(255,236,172,.5), 0 0 110px rgba(180,220,255,.24);
+    }
+
+    .star-label{
+      position:absolute;
+      top:calc(100% + 10px);
+      left:50%;
+      transform:translateX(-50%);
+      white-space:nowrap;
+      font-size:.7rem;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+      color:rgba(255,241,190,.86);
+      opacity:0;
+      transition:opacity .3s ease;
+      pointer-events:none;
+    }
+
+    .star:hover .star-label,.star:focus-visible .star-label{opacity:1}
+
+    @keyframes twinkle{
+      0%,100%{opacity:.56;transform:translate(-50%,-50%) scale(.98)}
+      50%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}
+    }
+
+    .shooting-star{
+      position:absolute;
+      width:2px;
+      height:140px;
+      background:linear-gradient(to bottom, rgba(255,255,255,.95), transparent);
+      opacity:0;
+      transform:rotate(35deg);
+      animation:shoot 9s linear infinite;
+      filter:drop-shadow(0 0 10px rgba(255,255,255,.6));
+      z-index:1;
+      pointer-events:none;
+    }
+
+    .shooting-star:nth-child(1){top:8%;left:76%;animation-delay:1s}
+    .shooting-star:nth-child(2){top:24%;left:12%;animation-delay:4.8s}
+    .shooting-star:nth-child(3){top:58%;left:84%;animation-delay:9.2s}
+
+    @keyframes shoot{
+      0%{opacity:0;transform:translate(0,0) rotate(35deg)}
+      8%{opacity:1}
+      20%{opacity:0;transform:translate(-210px,220px) rotate(35deg)}
+      100%{opacity:0;transform:translate(-210px,220px) rotate(35deg)}
+    }
+
+    .popup-overlay{
+      position:fixed;
+      inset:0;
+      z-index:40;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(2,5,13,.62);
+      backdrop-filter:blur(10px);
+      opacity:0;
+      visibility:hidden;
+      transition:opacity .35s ease, visibility .35s ease;
+    }
+
+    .popup-overlay.show{
+      opacity:1;
+      visibility:visible;
+    }
+
+    .popup{
+      width:min(620px,100%);
+      padding:28px;
+      border-radius:28px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(15,22,44,.95), rgba(9,14,27,.95));
+      box-shadow:var(--shadow);
+      transform:translateY(16px) scale(.98);
+      transition:transform .4s ease;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .popup-overlay.show .popup{transform:translateY(0) scale(1)}
+
+    .popup::before{
+      content:"";
+      position:absolute;
+      width:240px;height:240px;
+      right:-70px;top:-70px;
+      background:radial-gradient(circle, rgba(189,223,255,.14), transparent 72%);
+      pointer-events:none;
+    }
+
+    .popup h2{
+      font-size:clamp(1.5rem,4vw,2.2rem);
+      margin-bottom:12px;
+      max-width:14ch;
+    }
+
+    .popup p{
+      margin:0;
+      line-height:1.9;
+      color:#dfe8ff;
+      max-width:60ch;
+    }
+
+    .popup-actions{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:22px;
+      flex-wrap:wrap;
+    }
+
+    .popup-tag{
+      color:var(--muted);
+      font-size:.88rem;
+    }
+
+    .close-btn{
+      min-height:42px;
+      padding:0 16px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      cursor:pointer;
+    }
+
+    .log-section{
+      padding:70px 0 120px;
+    }
+
+    .log-shell{
+      display:grid;
+      grid-template-columns:.95fr 1.05fr;
+      gap:24px;
+      align-items:start;
+    }
+
+    .log-panel,.upgrade-panel,.final-message{
+      padding:26px;
+    }
+
+    .log-list{
+      display:grid;
+      gap:12px;
+      margin-top:22px;
+    }
+
+    .log-entry{
+      display:grid;
+      grid-template-columns:120px 1fr;
+      gap:14px;
+      padding:16px;
+      border-radius:22px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .log-day{
+      font-family:'Orbitron','Inter',sans-serif;
+      font-size:.84rem;
+      letter-spacing:.12em;
+      color:var(--cyan);
+      text-transform:uppercase;
+    }
+
+    .log-text{
+      color:var(--text);
+      line-height:1.75;
+    }
+
+    .upgrade-grid{
+      display:grid;
+      gap:12px;
+      margin-top:18px;
+    }
+
+    .upgrade-item{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:16px 18px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.03);
+      color:var(--text);
+    }
+
+    .upgrade-item span:first-child{
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .upgrade-item strong{
+      font-weight:500;
+      color:var(--success);
+    }
+
+    .final-message{
+      margin-top:24px;
+      border-radius:28px;
+      border:1px solid rgba(255,225,236,.14);
+      background:linear-gradient(180deg, rgba(20,25,48,.82), rgba(10,14,27,.84));
+      opacity:0;
+      transform:translateY(26px);
+      transition:opacity .85s ease, transform .85s ease, box-shadow .85s ease;
+    }
+
+    .final-message.visible{
+      opacity:1;
+      transform:translateY(0);
+      box-shadow:0 0 44px rgba(255,215,236,.12);
+    }
+
+    .final-message h3{
+      font-size:clamp(1.6rem,3.6vw,2.7rem);
+      margin-bottom:12px;
+      max-width:16ch;
+    }
+
+    .final-message p{
+      margin:0;
+      line-height:1.9;
+      color:var(--muted);
+      max-width:60ch;
+    }
+
+    .footer-note{
+      text-align:center;
+      color:rgba(156,173,206,.6);
+      font-size:.86rem;
+      margin-top:18px;
+    }
+
+    @media (max-width:960px){
+      .hero-panel,.log-shell{grid-template-columns:1fr}
+      .hero-copy,.hero-side,.log-panel,.upgrade-panel,.final-message{padding:24px}
+      .section-top{flex-direction:column;align-items:start}
+      .hud{justify-content:start}
+      .star-map{min-height:1080px}
+    }
+
+    @media (max-width:640px){
+      body{cursor:auto}
+      .hero{padding-top:32px}
+      .hero-copy{padding:22px}
+      .hero-side{padding:18px}
+      .btn{width:100%}
+      .hero-actions{flex-direction:column}
+      .log-entry{grid-template-columns:1fr}
+      .star-map{min-height:960px}
+      .popup-actions{flex-direction:column;align-items:start}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      *,*::before,*::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+        scroll-behavior:auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="cursor-ring" aria-hidden="true"></div>
+  <div class="cursor-dot" aria-hidden="true"></div>
+
+  <div class="loading-screen" id="loadingScreen" aria-live="polite">
+    <div class="boot-panel">
+      <div class="boot-title">System update protocol</div>
+      <div class="boot-line"><span>Initializing update…</span><span class="boot-status">OK</span></div>
+      <div class="boot-line"><span>Applying love patch v3.0…</span><span class="boot-status">OK</span></div>
+      <div class="boot-line"><span>Enhancing emotional system…</span><span class="boot-status">OK</span></div>
+      <div class="boot-line"><span>Calibrating Yousra priority core…</span><span class="boot-status">MAX</span></div>
+      <div class="boot-progress"><span></span></div>
+      <div class="boot-complete">Update complete.</div>
+    </div>
+  </div>
+
+  <div class="ambient"></div>
+
+  <main class="shell">
+    <section class="hero" id="top">
+      <div class="hero-panel">
+        <div class="hero-copy glass">
+          <div class="hero-kicker">Love system v3.0</div>
+          <h1>New atmosphere loaded.<br><span>Yousra</span> remains the center.</h1>
+          <p>
+            This is not a replacement. It is an evolution. The sky is deeper now, the stars remember more,
+            and every hidden line in this universe has learned how to say what it feels a little better.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#stars">Launch upgraded sky</a>
+            <a class="btn" href="#logs">Read system log</a>
+          </div>
+        </div>
+
+        <div class="hero-side glass">
+          <div class="mini-card">
+            <div class="mini-label">Upgrade summary</div>
+            <div class="mini-value">More stars. Deeper memories. Smoother feelings. Stronger gravity toward one person.</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Emotional status</div>
+            <div class="status-pill">● Still falling</div>
+          </div>
+          <div class="mini-card">
+            <div class="mini-label">Core note</div>
+            <div class="mini-value">Some systems grow by adding features. This one grows because Yousra keeps making it worth improving.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="sky-section" id="stars">
+      <div class="section-top">
+        <div>
+          <div class="section-kicker">Expanded star field</div>
+          <h2>The universe looks brighter when it has more reasons to remember.</h2>
+          <p>Some stars still whisper. The new ones go deeper. Interact with enough of them and the update reveals what it was really trying to say.</p>
+        </div>
+        <div class="hud">
+          <div class="hud-item" id="progressText">Interactions: 0</div>
+          <div class="hud-item" id="memoryText">Memory stars: 0</div>
+          <div class="hud-item">Mode: romantic upgrade</div>
+        </div>
+      </div>
+
+      <div class="star-map glass" id="starMap">
+        <svg id="starSvg" viewBox="0 0 100 120" preserveAspectRatio="none" aria-hidden="true">
+          <line class="link-line" x1="18" y1="18" x2="31" y2="26"></line>
+          <line class="link-line" x1="31" y1="26" x2="45" y2="18"></line>
+          <line class="link-line" x1="66" y1="22" x2="78" y2="30"></line>
+          <line class="link-line" x1="55" y1="70" x2="66" y2="78"></line>
+          <line class="link-line" x1="35" y1="80" x2="46" y2="92"></line>
+
+          <line class="memory-link" id="memoryLink1" x1="21" y1="60" x2="33" y2="68"></line>
+          <line class="memory-link" id="memoryLink2" x1="33" y1="68" x2="50" y2="62"></line>
+          <line class="memory-link" id="memoryLink3" x1="50" y1="62" x2="67" y2="68"></line>
+          <line class="memory-link" id="memoryLink4" x1="67" y1="68" x2="79" y2="60"></line>
+        </svg>
+
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+      </div>
+    </section>
+
+    <section class="log-section" id="logs">
+      <div class="log-shell">
+        <div class="log-panel glass">
+          <div class="log-title">System log</div>
+          <div class="log-header">
+            <h2>Tracked moments from an emotional system that kept updating itself.</h2>
+            <p>It started quietly. Then the signals grew stronger. Eventually the whole structure learned one clear truth: this connection was not temporary.</p>
+          </div>
+
+          <div class="log-list">
+            <div class="log-entry">
+              <div class="log-day">Day 1</div>
+              <div class="log-text">Unexpected connection detected.</div>
+            </div>
+            <div class="log-entry">
+              <div class="log-day">Day 14</div>
+              <div class="log-text">Attention patterns became unusually consistent. Subject remained on the mind longer than expected.</div>
+            </div>
+            <div class="log-entry">
+              <div class="log-day">Day 47</div>
+              <div class="log-text">Feelings increasing. Stability remained high. Calmness and intensity somehow started existing together.</div>
+            </div>
+            <div class="log-entry">
+              <div class="log-day">Day 90+</div>
+              <div class="log-text">Status: Still falling.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="upgrade-panel glass">
+            <div class="log-title">Upgrade diagnostics</div>
+            <h2 style="margin:0;font-size:clamp(1.5rem,3.5vw,2.3rem);line-height:1.12;">What changed in this version</h2>
+            <div class="upgrade-grid">
+              <div class="upgrade-item"><span>Star field brightness</span><strong>Enhanced</strong></div>
+              <div class="upgrade-item"><span>Memory depth</span><strong>Unlocked</strong></div>
+              <div class="upgrade-item"><span>Emotional precision</span><strong>Improved</strong></div>
+              <div class="upgrade-item"><span>Core attachment</span><strong>Permanent</strong></div>
+            </div>
+          </div>
+
+          <div class="final-message glass" id="finalMessage">
+            <div class="log-title">Hidden upgrade</div>
+            <h3>This update wasn’t necessary… but you deserve more every time.</h3>
+            <p>The truth is simple: improving this universe keeps feeling natural when the reason behind it is you.</p>
+          </div>
+
+          <div class="footer-note">Private build • made for Yousra</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="popup-overlay" id="popupOverlay" aria-hidden="true">
+    <div class="popup">
+      <div class="popup-kicker" id="popupKicker">Signal opened</div>
+      <h2 id="popupTitle">Star message</h2>
+      <p id="popupText"></p>
+      <div class="popup-actions">
+        <div class="popup-tag" id="popupTag">Emotional data received.</div>
+        <button class="close-btn" id="closePopup" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const loadingScreen = document.getElementById('loadingScreen');
+    const starMap = document.getElementById('starMap');
+    const popupOverlay = document.getElementById('popupOverlay');
+    const popupTitle = document.getElementById('popupTitle');
+    const popupText = document.getElementById('popupText');
+    const popupKicker = document.getElementById('popupKicker');
+    const popupTag = document.getElementById('popupTag');
+    const closePopup = document.getElementById('closePopup');
+    const progressText = document.getElementById('progressText');
+    const memoryText = document.getElementById('memoryText');
+    const finalMessage = document.getElementById('finalMessage');
+    const memoryLinks = [1,2,3,4].map(i => document.getElementById(`memoryLink${i}`));
+
+    const stars = [
+      { x: 14, y: 16, size: 10, type: 'standard', title: 'Signal 01', msg: 'The first version of this sky already knew one thing: every calm feeling in it kept orbiting you.' },
+      { x: 28, y: 24, size: 9, type: 'standard', title: 'Signal 02', msg: 'Some people pass through the mind. You stayed there softly, and then completely.' },
+      { x: 44, y: 16, size: 10, type: 'standard', title: 'Signal 03', msg: 'The universe stayed huge, but my attention learned how to become very precise.' },
+      { x: 68, y: 20, size: 9, type: 'standard', title: 'Signal 04', msg: 'There is something gentle about the way your existence changes the temperature of a whole day.' },
+      { x: 82, y: 28, size: 10, type: 'standard', title: 'Signal 05', msg: 'Even distant stars feel less distant when they remind me of your light.' },
+
+      { x: 21, y: 60, size: 13, type: 'memory', title: 'Memory Star A', msg: 'Some memories are loud. The ones that matter most are quiet — and somehow they stay longer. You became one of those for me.' },
+      { x: 33, y: 68, size: 12, type: 'memory', title: 'Memory Star B', msg: 'This version learned that tenderness is not weakness. It is what happens when someone matters enough to soften everything.' },
+      { x: 50, y: 62, size: 26, type: 'core', title: 'Core of the system', label: 'Core of the system', msg: 'You are not just part of this universe… you are the reason it exists.' },
+      { x: 67, y: 68, size: 12, type: 'memory', title: 'Memory Star C', msg: 'The more time passes, the stranger it feels that something this beautiful ever looked accidental.' },
+      { x: 79, y: 60, size: 13, type: 'memory', title: 'Memory Star D', msg: 'The update added more stars, but the real change is this: my feelings learned how to go deeper without losing their calm.' },
+
+      { x: 18, y: 82, size: 10, type: 'standard', title: 'Signal 06', msg: 'There are systems built for speed. This one was built for sincerity.' },
+      { x: 36, y: 80, size: 9, type: 'standard', title: 'Signal 07', msg: 'I did not expect the sky to evolve. Then you kept giving it reasons to.' },
+      { x: 54, y: 90, size: 10, type: 'standard', title: 'Signal 08', msg: 'Some emotions burn too fast. This one stayed bright and became more real.' },
+      { x: 74, y: 84, size: 9, type: 'standard', title: 'Signal 09', msg: 'If peace and longing could exist at once, they would probably feel like thinking about you.' }
+    ];
+
+    const clickedStars = new Set();
+    let memoryOpened = 0;
+
+    function addAmbientStars(count = 220) {
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement('div');
+        star.className = 'ambient-star';
+        const size = Math.random() * 2.8 + 0.8;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.setProperty('--speed', `${3 + Math.random() * 5}s`);
+        starMap.appendChild(star);
+      }
+    }
+
+    function openPopup(title, text, kicker, tag) {
+      popupTitle.textContent = title;
+      popupText.textContent = text;
+      popupKicker.textContent = kicker;
+      popupTag.textContent = tag;
+      popupOverlay.classList.add('show');
+      popupOverlay.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeModal() {
+      popupOverlay.classList.remove('show');
+      popupOverlay.setAttribute('aria-hidden', 'true');
+    }
+
+    closePopup.addEventListener('click', closeModal);
+    popupOverlay.addEventListener('click', (e) => {
+      if (e.target === popupOverlay) closeModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    function updateHUD() {
+      progressText.textContent = `Interactions: ${clickedStars.size}`;
+      memoryText.textContent = `Memory stars: ${memoryOpened}`;
+      if (clickedStars.size >= 7) {
+        finalMessage.classList.add('visible');
+      }
+    }
+
+    function activateMemoryLinks() {
+      const activeCount = Math.min(memoryOpened, memoryLinks.length);
+      memoryLinks.forEach((line, index) => {
+        line.classList.toggle('active', index < activeCount);
+      });
+    }
+
+    function addInteractiveStars() {
+      stars.forEach((item, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `star ${item.type}`;
+        button.style.left = item.x + '%';
+        button.style.top = item.y + '%';
+        button.style.width = item.size + 'px';
+        button.style.height = item.size + 'px';
+        button.style.setProperty('--speed', `${3.4 + Math.random() * 2.6}s`);
+        button.setAttribute('aria-label', item.title);
+
+        if (item.label) {
+          const label = document.createElement('span');
+          label.className = 'star-label';
+          label.textContent = item.label;
+          button.appendChild(label);
+        }
+
+        button.addEventListener('click', () => {
+          const wasClicked = clickedStars.has(index);
+          clickedStars.add(index);
+
+          if (item.type === 'memory' && !wasClicked) {
+            memoryOpened += 1;
+            activateMemoryLinks();
+          }
+
+          if (item.type === 'core') {
+            openPopup(item.title, item.msg, 'Primary emotional source', 'System note: existence stabilized around one center.');
+          } else if (item.type === 'memory') {
+            openPopup(item.title, item.msg, 'Memory star opened', 'Deep archive restored.');
+          } else {
+            openPopup(item.title, item.msg, 'Signal received', 'Atmosphere synchronized.');
+          }
+
+          updateHUD();
+        });
+
+        starMap.appendChild(button);
+      });
+    }
+
+    const cursorDot = document.querySelector('.cursor-dot');
+    const cursorRing = document.querySelector('.cursor-ring');
+    let ringX = window.innerWidth / 2;
+    let ringY = window.innerHeight / 2;
+    let mouseX = ringX;
+    let mouseY = ringY;
+
+    function animateCursor() {
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      if (cursorDot && cursorRing) {
+        cursorDot.style.left = `${mouseX}px`;
+        cursorDot.style.top = `${mouseY}px`;
+        cursorRing.style.left = `${ringX}px`;
+        cursorRing.style.top = `${ringY}px`;
+      }
+      requestAnimationFrame(animateCursor);
+    }
+
+    if (window.matchMedia('(hover: hover)').matches) {
+      window.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+      });
+      animateCursor();
+    }
+
+    setTimeout(() => {
+      loadingScreen.classList.add('hidden');
+    }, 3600);
+
+    addAmbientStars();
+    addInteractiveStars();
+    updateHUD();
+  </script>
+</body>
+</html>
